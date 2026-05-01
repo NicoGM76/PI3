@@ -1,0 +1,36 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id       Int    @id @default(autoincrement())
+  name     String
+  email    String @unique
+  password String
+
+  lotes    Lote[]
+}
+
+model Lote {
+  id       Int    @id @default(autoincrement())
+  nombre   String
+  fecha    DateTime @default(now())
+
+  userId   Int
+  user     User @relation(fields: [userId], references: [id])
+
+  inventario Inventario[]
+}
+
+model Inventario {
+  id       Int @id @default(autoincrement())
+  cantidad Int
+
+  loteId   Int
+  lote     Lote @relation(fields: [loteId], references: [id])
+}
