@@ -4,7 +4,7 @@
 // Depende del paquete: dio: ^5.x
 //
 // Para conectar con el backend basta con cambiar baseUrl
-// y agregar el token de autenticación en el interceptor.
+// y agregar el token de autenticaciÃ³n en el interceptor.
 
 import 'package:dio/dio.dart';
 
@@ -31,15 +31,15 @@ class ApiClient {
 
   static final ApiClient instance = ApiClient._();
 
-  // ─── Cambia esta URL al endpoint real de tu backend ───────────────
-  static const String _baseUrl = 'http://10.0.2.2:3000/api';
-  // ──────────────────────────────────────────────────────────────────
+  // â”€â”€â”€ Cambia esta URL al endpoint real de tu backend â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  static const String _baseUrl = 'http://127.0.0.1:8000';
+  // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   late final Dio _dio;
 
   Dio get dio => _dio;
 
-  /// Almacena el token JWT después del login.
+  /// Almacena el token JWT despuÃ©s del login.
   void setAuthToken(String token) {
     _dio.options.headers['Authorization'] = 'Bearer $token';
   }
@@ -49,7 +49,7 @@ class ApiClient {
   }
 }
 
-// ─── Interceptor de autenticación ─────────────────────────────────────────────
+// â”€â”€â”€ Interceptor de autenticaciÃ³n â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 class _AuthInterceptor extends Interceptor {
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {

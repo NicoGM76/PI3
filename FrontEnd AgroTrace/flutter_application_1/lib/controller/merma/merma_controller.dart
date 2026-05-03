@@ -1,6 +1,8 @@
 // lib/controller/merma/merma_controller.dart
 
 import 'package:flutter/foundation.dart';
+
+import '../../core/network/api_exception.dart';
 import '../../model/merma_model.dart';
 import 'merma_repository.dart';
 
@@ -13,13 +15,13 @@ class MermaController extends ChangeNotifier {
   final MermaRepository _repository;
 
   // ─── Estado ───────────────────────────────────────────────────────
-  MermaStatus _status          = MermaStatus.idle;
-  String?     _errorMessage;
-  String?     _loteSeleccionado;
-  String?     _motivoSeleccionado;
+  MermaStatus _status = MermaStatus.idle;
+  String? _errorMessage;
+  String? _loteSeleccionado;
+  String? _motivoSeleccionado;
 
   // Lotes disponibles
-  // TODO: cargar desde el backend o desde InventarioController
+  // TODO: cargar desde el backend o desde InventarioController.
   final List<String> lotesDisponibles = [
     'LT-023',
     'LT-015',
@@ -41,11 +43,11 @@ class MermaController extends ChangeNotifier {
   ];
 
   // ─── Getters ──────────────────────────────────────────────────────
-  MermaStatus get status             => _status;
-  String?     get errorMessage       => _errorMessage;
-  bool        get isLoading          => _status == MermaStatus.loading;
-  String?     get loteSeleccionado   => _loteSeleccionado;
-  String?     get motivoSeleccionado => _motivoSeleccionado;
+  MermaStatus get status => _status;
+  String? get errorMessage => _errorMessage;
+  bool get isLoading => _status == MermaStatus.loading;
+  String? get loteSeleccionado => _loteSeleccionado;
+  String? get motivoSeleccionado => _motivoSeleccionado;
 
   // ─── Acciones ─────────────────────────────────────────────────────
   void seleccionarLote(String? lote) {
@@ -59,38 +61,37 @@ class MermaController extends ChangeNotifier {
   }
 
   Future<void> registrarMerma({
-    required String       cantidadPerdida,
+    required String cantidadPerdida,
     required VoidCallback onSuccess,
   }) async {
     _setStatus(MermaStatus.loading);
+    _errorMessage = null;
 
+    try {
+      final merma = MermaModel(
+        id: '',
+        idLote: _loteSeleccionado ?? '',
+        cantidadPerdida: int.tryParse(cantidadPerdida) ?? 0,
+        motivo: _motivoSeleccionado ?? '',
+      );
 
-    // ── CONEXIÓN CON BACKEND ────────────────────────────────────────
-    
-     try {
-       final merma = MermaModel(
-         id:              '',
-         idLote:          _loteSeleccionado ?? '',
-         cantidadPerdida: int.tryParse(cantidadPerdida) ?? 0,
-         motivo:          _motivoSeleccionado ?? '',
-       );
-       await _repository.registrarMerma(merma);
-       _setStatus(MermaStatus.success);
-       onSuccess();
-     } on ApiException catch (e) {
-       _errorMessage = e.message;
-       _setStatus(MermaStatus.error);
-     } catch (_) {
-       _errorMessage = 'Ocurrió un error inesperado.';
-       _setStatus(MermaStatus.error);
-     }
-   
+      await _repository.registrarMerma(merma);
+
+      _setStatus(MermaStatus.success);
+      onSuccess();
+    } on ApiException catch (e) {
+      _errorMessage = e.message;
+      _setStatus(MermaStatus.error);
+    } catch (_) {
+      _errorMessage = 'Ocurrió un error inesperado.';
+      _setStatus(MermaStatus.error);
+    }
   }
 
   void limpiar() {
-    _loteSeleccionado   = null;
+    _loteSeleccionado = null;
     _motivoSeleccionado = null;
-    _errorMessage       = null;
+    _errorMessage = null;
     _setStatus(MermaStatus.idle);
   }
 
