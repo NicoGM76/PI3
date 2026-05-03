@@ -1,10 +1,8 @@
 // lib/core/network/api_client.dart
 //
 // Centraliza todas las llamadas HTTP.
-// Depende del paquete: dio: ^5.x
-//
-// Para conectar con el backend basta con cambiar baseUrl
-// y agregar el token de autenticaciÃ³n en el interceptor.
+// Backend FastAPI local:
+// http://127.0.0.1:8000
 
 import 'package:dio/dio.dart';
 
@@ -23,23 +21,50 @@ class ApiClient {
     );
 
     _dio.interceptors.add(_AuthInterceptor());
-    _dio.interceptors.add(LogInterceptor(
-      requestBody: true,
-      responseBody: true,
-    ));
+
+    _dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) {
+          print('================ HTTP REQUEST ================');
+          print('${options.method} ${options.uri}');
+          print('Headers: ${options.headers}');
+          print('Data: ${options.data}');
+          print('==============================================');
+          handler.next(options);
+        },
+        onResponse: (response, handler) {
+          print('================ HTTP RESPONSE ===============');
+          print('${response.statusCode} ${response.requestOptions.uri}');
+          print('Data: ${response.data}');
+          print('==============================================');
+          handler.next(response);
+        },
+        onError: (error, handler) {
+          print('================ HTTP ERROR ==================');
+          print('URL: ${error.requestOptions.uri}');
+          print('Method: ${error.requestOptions.method}');
+          print('Status: ${error.response?.statusCode}');
+          print('Response data: ${error.response?.data}');
+          print('Message: ${error.message}');
+          print('Type: ${error.type}');
+          print('Error: ${error.error}');
+          print('==============================================');
+          handler.next(error);
+        },
+      ),
+    );
   }
 
   static final ApiClient instance = ApiClient._();
 
-  // â”€â”€â”€ Cambia esta URL al endpoint real de tu backend â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // Flutter Web local contra FastAPI local.
   static const String _baseUrl = 'http://127.0.0.1:8000';
-  // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   late final Dio _dio;
 
   Dio get dio => _dio;
 
-  /// Almacena el token JWT despuÃ©s del login.
+  /// Almacena el token JWT después del login.
   void setAuthToken(String token) {
     _dio.options.headers['Authorization'] = 'Bearer $token';
   }
@@ -49,13 +74,14 @@ class ApiClient {
   }
 }
 
-// â”€â”€â”€ Interceptor de autenticaciÃ³n â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Interceptor de autenticación ─────────────────────────────────────────────
 class _AuthInterceptor extends Interceptor {
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
     if (err.response?.statusCode == 401) {
-      // TODO: Redirigir al login o refrescar token
+      // Aquí se podría redirigir al login o refrescar token.
     }
+
     handler.next(err);
   }
 }
