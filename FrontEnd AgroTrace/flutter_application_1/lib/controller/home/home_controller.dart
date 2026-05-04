@@ -2,71 +2,78 @@
 
 import 'package:flutter/foundation.dart';
 
+import '../../core/session/auth_session.dart';
+
 class HomeController extends ChangeNotifier {
   HomeController();
 
-  // ─── Estado ───────────────────────────────────────────────────────
-  final String _userName = 'Daniel'; // TODO: recibir del UserModel tras login
+  // â”€â”€â”€ Estado â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  String get userName {
+    final user = AuthSession.instance.currentUser;
+    if (user != null && user.firstName.isNotEmpty) {
+      return user.firstName;
+    }
+    return 'Usuario';
+  }
 
-  // ─── Getters ──────────────────────────────────────────────────────
-  String get userName => _userName;
+  // â”€â”€â”€ Getters â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   String get greeting {
     final hour = DateTime.now().hour;
-    if (hour < 12) return 'Buenos días';
+    if (hour < 12) return '';
     if (hour < 18) return 'Buenas tardes';
     return 'Buenas noches';
   }
 
   String get greetingEmoji {
     final hour = DateTime.now().hour;
-    if (hour < 12) return '☀️';
-    if (hour < 18) return '🌤️';
-    return '🌙';
+    if (hour < 12) return '';
+    if (hour < 18) return '';
+    return '';
   }
 
-  // ─── Opciones del menú principal ──────────────────────────────────
-  // Agrega o quita opciones aquí sin tocar la Vista
+  // â”€â”€â”€ Opciones del menÃº principal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // Agrega o quita opciones aquÃ­ sin tocar la Vista
   List<DashboardOption> get options => const [
         DashboardOption(
           label: 'Registrar Lote',
-          emoji: '🌱',
+          emoji: '',
           route: '/registrar-lote',
         ),
         DashboardOption(
           label: 'Empaque',
-          emoji: '📦',
+          emoji: '',
           route: '/empaque',
         ),
         DashboardOption(
           label: 'Inventario',
-          emoji: '📊',
+          emoji: '',
           route: '/inventario',
         ),
         DashboardOption(
           label: 'Generar QR',
-          emoji: '📲',
+          emoji: '',
           route: '/generacion-qr',
         ),
         DashboardOption(
           label: 'Escanear QR',
-          emoji: '🔍',
+          emoji: '',
           route: '/escanear-qr',
         ),
         DashboardOption(
           label: 'Merma',
-          emoji: '❗',
+          emoji: '',
           route: '/merma',
         ),
         DashboardOption(
           label: 'Salida',
-          emoji: '🚚',
+          emoji: '',
           route: '/salida',
         ),
       ];
 }
 
-// ─── Modelo simple para cada opción del dashboard ─────────────────────────────
+// â”€â”€â”€ Modelo simple para cada opciÃ³n del dashboard â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 class DashboardOption {
   const DashboardOption({
     required this.label,

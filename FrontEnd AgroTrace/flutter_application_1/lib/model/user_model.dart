@@ -1,7 +1,4 @@
-// lib/models/user_model.dart
-//
-// Modelo que refleja la respuesta del backend para un usuario.
-// Ajusta los campos según el contrato de tu API.
+// lib/model/user_model.dart
 
 class UserModel {
   const UserModel({
@@ -10,34 +7,54 @@ class UserModel {
     required this.lastName,
     required this.email,
     this.token,
+    this.estado,
+    this.idRol,
+    this.fechaCreacion,
   });
 
   final String id;
   final String firstName;
   final String lastName;
   final String email;
-  final String? token; // JWT devuelto al registrarse / iniciar sesión
+  final String? token;
+  final String? estado;
+  final int? idRol;
+  final String? fechaCreacion;
 
-  // ─── Deserialización desde la respuesta JSON del backend ──────────
   factory UserModel.fromJson(Map<String, dynamic> json) {
+    final rawNombre = (json['nombre'] ?? json['firstName'] ?? '').toString();
+    final partesNombre = rawNombre.trim().split(RegExp(r'\s+'));
+
+    final firstName = partesNombre.isNotEmpty && partesNombre.first.isNotEmpty
+        ? partesNombre.first
+        : rawNombre;
+
+    final lastName = partesNombre.length > 1
+        ? partesNombre.sublist(1).join(' ')
+        : (json['lastName'] ?? '').toString();
+
     return UserModel(
-      id:        json['id']         as String,
-      firstName: json['firstName']  as String,
-      lastName:  json['lastName']   as String,
-      email:     json['email']      as String,
-      token:     json['token']      as String?,
+      id: (json['id_usuario'] ?? json['id'] ?? '').toString(),
+      firstName: firstName,
+      lastName: lastName,
+      email: (json['correo'] ?? json['email'] ?? '').toString(),
+      token: (json['access_token'] ?? json['token']) as String?,
+      estado: json['estado']?.toString(),
+      idRol: json['id_rol'] is int
+          ? json['id_rol'] as int
+          : int.tryParse((json['id_rol'] ?? '').toString()),
+      fechaCreacion: json['fecha_creacion']?.toString(),
     );
   }
 
-  // ─── Serialización para enviar al backend ─────────────────────────
   Map<String, dynamic> toJson() => {
-        'id':        id,
+        'id': id,
         'firstName': firstName,
-        'lastName':  lastName,
-        'email':     email,
+        'lastName': lastName,
+        'email': email,
+        'token': token,
+        'estado': estado,
+        'id_rol': idRol,
+        'fecha_creacion': fechaCreacion,
       };
-
-  @override
-  String toString() =>
-      'UserModel(id: $id, name: $firstName $lastName, email: $email)';
 }

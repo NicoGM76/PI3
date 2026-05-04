@@ -9,6 +9,7 @@ import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_dimens.dart';
 import '../../core/constants/app_routes.dart';
 import '../../core/constants/app_text_styles.dart';
+import '../../core/session/auth_session.dart';
 
 class AgroDrawer extends StatefulWidget {
   const AgroDrawer({super.key});
