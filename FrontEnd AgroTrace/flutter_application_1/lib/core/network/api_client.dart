@@ -27,7 +27,7 @@ class ApiClient {
 
   static final ApiClient instance = ApiClient._();
 
-  static const String _baseUrl = 'http://127.0.0.1:8000';
+  static const String _baseUrl = 'https://agrotrace-backend-bpwx.onrender.com';
 
   late final Dio _dio;
 
