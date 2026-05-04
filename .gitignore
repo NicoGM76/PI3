@@ -1,0 +1,27 @@
+﻿# Python
+agrotrace_backend/.env
+agrotrace_backend/.venv/
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Local env files
+.env
+.env.*
+!.env.example
+
+# Flutter / Dart
+FrontEnd AgroTrace/flutter_application_1/.dart_tool/
+FrontEnd AgroTrace/flutter_application_1/build/
+FrontEnd AgroTrace/flutter_application_1/.flutter-plugins
+FrontEnd AgroTrace/flutter_application_1/.flutter-plugins-dependencies
+
+# Node
+FrontEnd AgroTrace/node_modules/
+FrontEnd AgroTrace/.env
+
+# Temporary repair files
+**/backup_*/
+**/rollback_*/
+**/fix_*.py
